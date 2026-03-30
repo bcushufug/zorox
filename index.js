@@ -1,0 +1,25 @@
+const axios = require('axios');
+
+module.exports = async (req, res) => {
+  const targetUrl = "https://ev-fast-mpd.starzplayarabia.com" + req.url;
+
+  const headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+    "Origin": "https://starzplayarabia.com",
+    "Referer": "https://starzplayarabia.com/",
+    "X-Forwarded-For": "94.200.20.10" // UAE IP
+  };
+
+  try {
+    const response = await axios.get(targetUrl, {
+      headers: headers,
+      responseType: 'arraybuffer'
+    });
+
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Content-Type", response.headers["content-type"]);
+    res.status(response.status).send(response.data);
+  } catch (error) {
+    res.status(500).send("Proxy Error: " + error.message);
+  }
+};
